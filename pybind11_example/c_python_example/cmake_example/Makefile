@@ -1,6 +1,6 @@
-all: exec
+all: run
 
-exec:
+run:
 	python test.py
 
 clean:

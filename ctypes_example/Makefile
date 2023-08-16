@@ -1,9 +1,9 @@
-all: compile exec clean
+all: compile
 
 compile:
 	g++ -fPIC -shared example.cpp -o example.so
 
-exec:
+run:
 	python test.py
 
 clean: 
