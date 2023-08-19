@@ -1,4 +1,4 @@
-all: first exec end
+all: exec
 
 compile:
 # no wave
@@ -12,15 +12,6 @@ compile:
 
 exec:
 	python test.py
-
-first:
-	date +%M.%s.%N
-
-middle:
-	date +%M.%s.%N
-
-end:
-	date +%M.%s.%N
 
 clean:
 	-rm -r ./verilator dump.vcd __pycache__

@@ -1,6 +1,12 @@
-#include<stdint.h>
-#include<iostream>
-#include<string>
+import cppyy
+
+cppyy.cppdef("""
+
+#include <stdint.h>
+#include <iostream>
+#include <string>
+
+using namespace std;
 
 //8个字节
 typedef uint64_t CData;
@@ -33,7 +39,10 @@ class VMyTopLevel
             clk=0;
             reset=1;
         }
-        void eval() {std::cout<<"step()\n";}
+        void eval() 
+        {
+            std::cout<<"step()"<<endl;
+        }
 };
 
 class Wrapper
@@ -88,3 +97,16 @@ bool eval(Wrapper* handle)
     return true;
 //    return Verilated::gotFinish();
 }
+
+""")
+
+from cppyy.gbl import getHandle, getValue, setValue, eval
+
+p = getHandle('value')
+for i in range(5):
+    value = getValue(p, i)
+    print(value)
+setValue(p, 0, 11)
+value = getValue(p, 0)
+print(value)
+eval(p)
