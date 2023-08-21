@@ -6,7 +6,11 @@ cppyy.add_include_path('/usr/local/share/verilator/include')
 cppyy.add_library_path('/usr/local/share/verilator/include')
 cppyy.add_library_path('./verilator')
 cppyy.add_library_path('.')
-# cppyy.load_library('library.so')
+
+gSystem = cppyy.gbl.gSystem
+sc = gSystem.Load('library.so')
+
+cppyy.load_library('library.so')
 
 cppyy.cppdef("""
 
