@@ -1,4 +1,5 @@
 import cppyy
+from cppyy import gbl as cpp
 
 cppyy.cppdef("""
 
@@ -54,10 +55,10 @@ int main()
 """)
 # True
 
-from cppyy.gbl import MyClass
-from cppyy.gbl import test
+# from cppyy.gbl import MyClass
+# from cppyy.gbl import test
 
-m = MyClass()
+m = cpp.MyClass()
 
 m.say_hello()
 
@@ -65,4 +66,4 @@ print("add_int:", m.add_int(12))
 
 m.say_hello()
 
-test()
+cpp.test()

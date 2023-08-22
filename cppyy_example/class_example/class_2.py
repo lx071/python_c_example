@@ -1,4 +1,5 @@
 import cppyy
+from cppyy import gbl as cpp
 
 cppyy.cppdef("""
 
@@ -100,13 +101,13 @@ bool eval(Wrapper* handle)
 
 """)
 
-from cppyy.gbl import getHandle, getValue, setValue, eval
+# from cppyy.gbl import getHandle, getValue, setValue, eval
 
-p = getHandle('value')
+p = cpp.getHandle('value')
 for i in range(5):
-    value = getValue(p, i)
+    value = cpp.getValue(p, i)
     print(value)
-setValue(p, 0, 11)
-value = getValue(p, 0)
+cpp.setValue(p, 0, 11)
+value = cpp.getValue(p, 0)
 print(value)
-eval(p)
+cpp.eval(p)

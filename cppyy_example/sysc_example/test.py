@@ -1,4 +1,5 @@
 import cppyy
+from cppyy import gbl as cpp
 
 cppyy.add_include_path('/usr/local/systemc-2.3.4/include')
 cppyy.add_library_path('/usr/local/systemc-2.3.4/lib-linux64')
@@ -65,6 +66,4 @@ int sc_main() {
 
 """)
 
-from cppyy.gbl import sc_main
-
-sc_main()
+cpp.sc_main()
