@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import cppyy
 from cppyy import gbl as cpp
 
@@ -10,7 +12,7 @@ cppyy.cppdef("""
 #include <systemc.h>
 
 SC_MODULE(Counter) {
-    sc_in_clk clock;  // 输入时钟信号
+    sc_in_clk clock;   // 输入时钟信号
     sc_in<bool> reset; // 输入复位信号
     sc_out<int> count; // 输出计数值
 
