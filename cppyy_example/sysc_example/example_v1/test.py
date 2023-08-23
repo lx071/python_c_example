@@ -40,6 +40,56 @@ SC_MODULE(Counter) {
     }
 };
 
+class ClkGen: public sc_core::sc_module {
+public:
+    sc_core::sc_out<sc_core::sc_time> clk_o;
+
+    ClkGen(const sc_core::sc_module_name& nm)
+    : sc_core::sc_module(nm)
+    , clk_o("clk_o")
+    {
+    }
+
+    ~ClkGen() {
+    // TODO Auto-generated destructor stub
+    }
+protected:
+    void end_of_elaboration() {
+        //clk_o.write(10_ns);
+    }
+};
+
+class ResetGen: public sc_core::sc_module {
+public:
+    SC_HAS_PROCESS(ResetGen);
+
+    sc_core::sc_out<sc_dt::sc_logic>  reset_o;
+
+    ResetGen(const sc_core::sc_module_name& nm)
+    : sc_core::sc_module(nm)
+    , reset_o("reset_o")
+    {
+        SC_THREAD(thread);
+    }
+
+    ~ResetGen() {
+    }
+protected:
+
+    void thread() {
+    }
+
+};
+
+
+int sim_start(int num)
+{
+    cout << "sim_start" << endl;
+    sc_start(num, SC_NS);
+    cout << "sim_end" << endl;
+    return 0;
+}
+
 int sc_main() {
     sc_clock clock("clock", 10, SC_NS); // 创建一个时钟信号，周期为10ns
     sc_signal<bool> reset; // 创建一个复位信号
@@ -54,11 +104,34 @@ int sc_main() {
     sc_start(5, SC_NS); // 等待一段时间
     reset = false; // 设置复位信号为低电平
 
-    sc_start(50, SC_NS); // 运行仿真，仿真时间为50ns
-
+    //sc_start(50, SC_NS); // 运行仿真，仿真时间为50ns
+  
     return 0;
 }
 
 """)
 
-cpp.sc_main()
+
+###############################################################################
+# instantiate
+###############################################################################
+clkgen = cpp.ClkGen(cpp.sc_core.sc_module_name("clk_gen"))
+rstgen = cpp.ResetGen(cpp.sc_core.sc_module_name("rst_gen"))
+###############################################################################
+# signals
+###############################################################################
+sig_clk = cpp.sc_core.sc_signal[cpp.sc_core.sc_time]("clk")
+sig_rst = cpp.sc_core.sc_signal[cpp.sc_dt.sc_logic]("rst")
+###############################################################################
+# connect it
+###############################################################################
+clkgen.clk_o(sig_clk)
+rstgen.reset_o(sig_rst)
+
+
+if __name__ == "__main__":
+    # cpp.sc_main()
+    # cpp.sim_start(50)
+    cpp.sc_core.sc_start()
+
+    
