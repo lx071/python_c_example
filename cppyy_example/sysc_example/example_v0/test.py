@@ -2,29 +2,17 @@
 
 import cppyy
 from cppyy import gbl as cpp
-import os
-
-myDir = os.path.dirname( os.path.realpath(__file__))
 
 cppyy.add_include_path('/usr/local/systemc-2.3.4/include')
 cppyy.add_library_path('/usr/local/systemc-2.3.4/lib-linux64')
 cppyy.load_library('systemc')
 
-# Loading Components lib
-cppyy.add_include_path(os.path.join(myDir, 'utils'))
-cppyy.load_library(os.path.join(myDir, 'utils/lib_utils.so'))
-
-# print('path:', os.path.join(myDir, 'utils'))
-
 cppyy.cppdef("""
 
 #include <systemc.h>
-#include "clkgen.h"
-#include "resetgen.h"
-
 
 SC_MODULE(Counter) {
-    sc_in<bool> clock;  // 输入时钟信号
+    sc_in_clk clock;   // 输入时钟信号
     sc_in<bool> reset; // 输入复位信号
     sc_out<int> count; // 输出计数值
 
@@ -52,6 +40,75 @@ SC_MODULE(Counter) {
     }
 };
 
+class ClkGen: public sc_core::sc_module {
+public:
+    sc_core::sc_out<sc_core::sc_time> clk_o;
+
+    ClkGen(const sc_core::sc_module_name& nm)
+    : sc_core::sc_module(nm)
+    , clk_o("clk_o")
+    {
+    }
+
+    ~ClkGen() {
+    // TODO Auto-generated destructor stub
+    }
+protected:
+    void end_of_elaboration() {
+        //clk_o.write(10_ns);
+    }
+};
+
+class ResetGen: public sc_core::sc_module {
+public:
+    SC_HAS_PROCESS(ResetGen);
+
+    sc_core::sc_out<sc_dt::sc_logic>  reset_o;
+
+    ResetGen(const sc_core::sc_module_name& nm)
+    : sc_core::sc_module(nm)
+    , reset_o("reset_o")
+    {
+        SC_THREAD(thread);
+    }
+
+    ~ResetGen() {
+    }
+protected:
+
+    void thread() {
+    }
+
+};
+
+
+int sim_start(int num)
+{
+    cout << "sim_start" << endl;
+    sc_start(num, SC_NS);
+    cout << "sim_end" << endl;
+    return 0;
+}
+
+int sc_main() {
+    sc_clock clock("clock", 10, SC_NS); // 创建一个时钟信号，周期为10ns
+    sc_signal<bool> reset; // 创建一个复位信号
+    sc_signal<int> count; // 创建一个计数信号
+
+    Counter counter("counter"); // 实例化计数器模块
+    counter.clock(clock); // 连接时钟信号
+    counter.reset(reset); // 连接复位信号
+    counter.count(count); // 连接计数信号
+    
+    reset = true; // 设置复位信号为高电平
+    sc_start(5, SC_NS); // 等待一段时间
+    reset = false; // 设置复位信号为低电平
+
+    //sc_start(50, SC_NS); // 运行仿真，仿真时间为50ns
+  
+    return 0;
+}
+
 """)
 
 
@@ -60,22 +117,17 @@ SC_MODULE(Counter) {
 ###############################################################################
 clkgen = cpp.ClkGen(cpp.sc_core.sc_module_name("clk_gen"))
 rstgen = cpp.ResetGen(cpp.sc_core.sc_module_name("rst_gen"))
-counter = cpp.Counter(cpp.sc_core.sc_module_name("counter"))
 ###############################################################################
 # signals
 ###############################################################################
-sig_clk = cpp.sc_core.sc_signal[cpp.bool]("clk")
-sig_rst = cpp.sc_core.sc_signal[cpp.bool]("rst")
-sig_count = cpp.sc_core.sc_signal[cpp.int]("count")
+sig_clk = cpp.sc_core.sc_signal[cpp.sc_core.sc_time]("clk")
+sig_rst = cpp.sc_core.sc_signal[cpp.sc_dt.sc_logic]("rst")
 ###############################################################################
 # connect it
 ###############################################################################
 clkgen.clk_o(sig_clk)
 rstgen.reset_o(sig_rst)
 
-counter.clock(sig_clk)
-counter.reset(sig_rst)
-counter.count(sig_count)
 
 if __name__ == "__main__":
     # cpp.sc_main()
