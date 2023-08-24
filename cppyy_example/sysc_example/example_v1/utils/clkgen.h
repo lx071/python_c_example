@@ -12,12 +12,15 @@
 
 class ClkGen: public sc_core::sc_module {
 public:
-    sc_core::sc_out<sc_core::sc_time> clk_o;
+    SC_HAS_PROCESS(ClkGen);
+    
+    sc_core::sc_out<bool> clk_o;
 
     ClkGen(const sc_core::sc_module_name&);
     virtual ~ClkGen();
 protected:
     void end_of_elaboration() override;
+    void thread();
 };
 
 #endif /* VP_COMPONENTS_CLKGEN_H_ */

@@ -6,7 +6,7 @@
  */
 
 #include <resetgen.h>
-#include <scc/utilities.h>
+// #include <scc/utilities.h>
 
 ResetGen::ResetGen(const sc_core::sc_module_name& nm)
 : sc_core::sc_module(nm)
@@ -19,7 +19,8 @@ ResetGen::~ResetGen() {
 }
 
 void ResetGen::thread() {
-    reset_o=sc_dt::SC_LOGIC_1;
-    wait(100_ns);
-    reset_o=sc_dt::SC_LOGIC_0;
+    reset_o=1;
+    wait();
+    std::cout<<"XXX"<<std::endl;
+    reset_o=0;
 }

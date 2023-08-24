@@ -14,7 +14,7 @@ class ResetGen: public sc_core::sc_module {
 public:
     SC_HAS_PROCESS(ResetGen);
 
-    sc_core::sc_out<sc_dt::sc_logic>  reset_o;
+    sc_core::sc_out<bool> reset_o;
 
     ResetGen(const sc_core::sc_module_name&);
     virtual ~ResetGen();

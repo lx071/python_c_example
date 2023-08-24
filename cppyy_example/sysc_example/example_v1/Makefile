@@ -1,7 +1,10 @@
-all: run
+all: compile
+
+compile:
+	cd utils && make && cd ..
 
 run:
-	python test.py
+	python test2.py
 
 clean:
 	rm -rf *.vcd

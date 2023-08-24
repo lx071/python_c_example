@@ -9,9 +9,9 @@ compile:
 	make -j -C ./verilator -f VMyTopLevel.mk VMyTopLevel
 
 # c++ -O3 -Wall -shared -std=c++11 -fPIC -faligned-new -I./verilator $(shell python3 -m pybind11 --includes) -I/usr/local/share/verilator/include ./verilator/*.o -o example$(shell python3-config --extension-suffix)
-# gcc -shared -o library.so verilator/*.o
+	g++ -fPIC -shared -o library.so verilator/*.o
 
-exec:
+run:
 	python test.py
 
 clean:
